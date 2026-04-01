@@ -145,6 +145,7 @@ function statBar(score) {
 
 // Main
 const userId = process.argv[2] || process.env.USER || process.env.USERNAME || 'anon'
+const companionName = process.argv[3] || null
 const key = userId + SALT
 const rng = mulberry32(hashString(key))
 
@@ -163,6 +164,60 @@ const statLines = STAT_NAMES.map(name =>
   `  ${name.padEnd(10)} ${statBar(stats[name])}  ${String(stats[name]).padStart(3)}`
 ).join('\n')
 
+// --- dailySeed ---
+function getDailyDate() {
+  const d = new Date()
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+}
+
+const dailySeed = hashString(userId + '-daily-' + getDailyDate()) % 1000000
+
+// --- tradeCardLines ---
+function statBar6(score) {
+  const filled = Math.round(score / 17)
+  return '█'.repeat(filled) + '░'.repeat(6 - filled)
+}
+
+function cardLine(content) {
+  return '│ ' + content.padEnd(28) + ' │'
+}
+
+function buildTradeCard(name, species, stars, shiny, sprite, stats) {
+  const CARD_WIDTH = 32
+  const topBorder    = '┌' + '─'.repeat(CARD_WIDTH - 2) + '┐'
+  const midBorder    = '├' + '─'.repeat(CARD_WIDTH - 2) + '┤'
+  const botBorder    = '└' + '─'.repeat(CARD_WIDTH - 2) + '┘'
+
+  const nameStr    = name.slice(0, 12)
+  const speciesStr = species.slice(0, 14)
+  const starsStr   = stars + (shiny ? ' ✨' : '')
+
+  const lines = []
+  lines.push(topBorder)
+  lines.push(cardLine(' BUDDY CARD'))
+  lines.push(cardLine(' ' + nameStr.padEnd(13) + starsStr))
+  lines.push(cardLine(' ' + speciesStr))
+  lines.push(midBorder)
+
+  for (const spriteLine of sprite) {
+    lines.push(cardLine(spriteLine))
+  }
+
+  lines.push(midBorder)
+
+  for (const statName of STAT_NAMES) {
+    const score = stats[statName]
+    const bar = statBar6(score)
+    const scoreStr = String(score).padStart(3)
+    lines.push(cardLine(' ' + statName.padEnd(10) + bar + '  ' + scoreStr))
+  }
+
+  lines.push(botBorder)
+  return lines
+}
+
+const tradeCardLines = buildTradeCard(companionName || userId, species, RARITY_STARS[rarity], shiny, sprite, stats)
+
 console.log(JSON.stringify({
   userId,
   rarity,
@@ -176,4 +231,6 @@ console.log(JSON.stringify({
   sprite,
   face,
   inspirationSeed,
+  dailySeed,
+  tradeCardLines,
 }, null, 2))
