@@ -31,7 +31,7 @@ A tiny personal companion for Claude Code and Codex CLI. Each user gets a unique
 **One command for both Claude Code and Codex:**
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/YichenWei0601/mybuddy-plugin/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/YichenWei0601/mybuddy/main/install.sh | bash
 ```
 
 The script auto-detects which tools you have installed and configures each one.

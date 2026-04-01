@@ -3,11 +3,11 @@
 # Works for Claude Code and Codex CLI
 # Usage:
 #   bash install.sh
-#   curl -sSL https://raw.githubusercontent.com/YichenWei0601/mybuddy-plugin/main/install.sh | bash
+#   curl -sSL https://raw.githubusercontent.com/YichenWei0601/mybuddy/main/install.sh | bash
 
 set -e
 
-REPO_URL="https://raw.githubusercontent.com/YichenWei0601/mybuddy-plugin/main"
+REPO_URL="https://raw.githubusercontent.com/YichenWei0601/mybuddy/main"
 BUDDY_DIR="$HOME/.config/mybuddy"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-install.sh}")" 2>/dev/null && pwd || echo "")"
 
