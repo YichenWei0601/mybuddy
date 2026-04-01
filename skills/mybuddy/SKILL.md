@@ -3,17 +3,19 @@ name: mybuddy
 description: Use this skill when the user types /mybuddy, /mybuddy pet, /mybuddy mute, asks to meet their companion, wants to see their buddy, says "pet my buddy", or asks about their companion's name, species, or stats.
 version: 1.0.0
 disable-model-invocation: true
----
-
-## Live Data
-
-Companion: !`bash ~/.config/mybuddy/get-companion.sh`
-
+allowed-tools: Bash, Read, Write
 ---
 
 You are handling the `/mybuddy` command. ARGUMENTS: $ARGUMENTS
 
-The JSON above contains all companion data. Bones fields (`species`, `rarity`, `stars`, `eye`, `hat`, `shiny`, `stats`, `statLines`, `sprite`, `face`, `dailySeed`, `tradeCardLines`) are top-level. The `soul` field contains the stored soul: `{ name, personality, hatchedAt }` — or `null` if not yet hatched.
+## Step 1 — load companion data
+
+Run this command with the Bash tool and parse the JSON output:
+```
+bash ~/.config/mybuddy/get-companion.sh
+```
+
+The JSON contains all companion data. Top-level fields: `species`, `rarity`, `stars`, `eye`, `hat`, `shiny`, `stats`, `statLines`, `sprite`, `face`, `dailySeed`, `tradeCardLines`. The `soul` field is `{ name, personality, hatchedAt }` or `null` if not yet hatched.
 
 The user has a persistent digital companion — a small creature that sits beside their work. Each user gets a deterministic companion based on their identity (species, eye, hat, rarity, stats never change). Only the name and personality are stored and generated once.
 
