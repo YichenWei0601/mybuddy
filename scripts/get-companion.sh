@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # get-companion.sh — called by SKILL.md !` injection
-# Bootstraps roll.js if missing, then outputs companion JSON
+# Outputs a single JSON with bones + soul merged
 
 BUDDY_DIR="$HOME/.config/mybuddy"
 mkdir -p "$BUDDY_DIR"
@@ -11,11 +11,38 @@ if [ ! -f "$BUDDY_DIR/roll.js" ]; then
   [ -n "$SRC" ] && cp "$SRC" "$BUDDY_DIR/roll.js"
 fi
 
-# Get stored companion name (empty string if no soul yet)
+SOUL_FILE="$BUDDY_DIR/companion.json"
+
+# Get stored companion name for trade card rendering
 BNAME=""
-SOUL="$BUDDY_DIR/companion.json"
-if [ -f "$SOUL" ]; then
-  BNAME=$(python3 -c "import json; d=json.load(open('$SOUL')); print(d.get('name',''))" 2>/dev/null || echo "")
+if [ -f "$SOUL_FILE" ]; then
+  BNAME=$(node -e "try{const d=require('fs').readFileSync('$SOUL_FILE','utf8'); console.log(JSON.parse(d).name||'')}catch{console.log('')}" 2>/dev/null || echo "")
 fi
 
-node "$BUDDY_DIR/roll.js" "${USER:-anon}" "$BNAME" 2>/dev/null || echo '{"error":"roll.js missing — reinstall plugin"}'
+# Merge bones + soul using node (avoids shell quoting issues with JSON)
+node - "${USER:-anon}" "$BNAME" "$SOUL_FILE" <<'NJSEOF'
+const fs = require('fs')
+const path = require('path')
+const buddyDir = path.join(process.env.HOME, '.config', 'mybuddy')
+const rollJs = path.join(buddyDir, 'roll.js')
+
+const [,, userId, bname, soulFile] = process.argv
+
+let bones
+try {
+  bones = JSON.parse(require('child_process').execSync(
+    `node ${rollJs} ${userId} "${bname}"`, { encoding: 'utf8' }
+  ))
+} catch {
+  process.stdout.write(JSON.stringify({ error: 'roll.js missing — reinstall plugin' }))
+  process.exit(0)
+}
+
+let soul = null
+try {
+  if (fs.existsSync(soulFile)) soul = JSON.parse(fs.readFileSync(soulFile, 'utf8'))
+} catch {}
+
+bones.soul = soul
+process.stdout.write(JSON.stringify(bones, null, 2))
+NJSEOF

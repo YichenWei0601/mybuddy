@@ -7,12 +7,13 @@ disable-model-invocation: true
 
 ## Live Data
 
-Companion bones: !`bash ~/.config/mybuddy/get-companion.sh`
-Companion soul:  !`cat ~/.config/mybuddy/companion.json 2>/dev/null || echo "null"`
+Companion: !`bash ~/.config/mybuddy/get-companion.sh`
 
 ---
 
 You are handling the `/mybuddy` command. ARGUMENTS: $ARGUMENTS
+
+The JSON above contains all companion data. Bones fields (`species`, `rarity`, `stars`, `eye`, `hat`, `shiny`, `stats`, `statLines`, `sprite`, `face`, `dailySeed`, `tradeCardLines`) are top-level. The `soul` field contains the stored soul: `{ name, personality, hatchedAt }` — or `null` if not yet hatched.
 
 The user has a persistent digital companion — a small creature that sits beside their work. Each user gets a deterministic companion based on their identity (species, eye, hat, rarity, stats never change). Only the name and personality are stored and generated once.
 
@@ -22,7 +23,7 @@ The user has a persistent digital companion — a small creature that sits besid
 - **"pet"**: Show ♥ ♥ ♥ and a one-line reaction in the companion's voice (use personality + peak stat for flavor).
 - **"mute"**: Read `~/.config/mybuddy/companion.json`, toggle `"muted": true/false`, write it back. Confirm: `{name} is now muted.` or `{name} is listening again.`
 
-## Hatching a new companion (soul is "null")
+## Hatching a new companion (`soul` field is null)
 
 1. The bones are already determined (see Live Data above — species, rarity, eye, hat, stats).
 2. Generate a **name**: 1–2 words, memorable, fits the species vibe.
@@ -61,9 +62,9 @@ After the personality line, always add a level line:
   Lv.{level}  ░░░ {daysAlive} days together
 ```
 
-- `daysAlive` = `floor((Date.now() - hatchedAt) / 86400000)`, where `hatchedAt` is read from companion.json.
+- `daysAlive` = `floor((Date.now() - hatchedAt) / 86400000)`, where `hatchedAt` is from `soul.hatchedAt`.
 - `level` = `floor(sqrt(daysAlive))`, minimum 1.
-- If `hatchedAt` is missing from companion.json, show `Lv.?` and omit the days count.
+- If `soul` is null or `soul.hatchedAt` is missing, show `Lv.?` and omit the days count.
 
 ## Storage
 
@@ -114,7 +115,7 @@ Print a shareable plain-text card using only ASCII box-drawing characters. Do no
 - Use `statLines` from the roll.js JSON for the stat bars, or re-render each stat as `{NAME padded to 9 chars}{bar} {score}`.
 - Level and daysAlive computed the same way as the main card (see Companion card format above).
 - `stars`: ★ common · ★★ uncommon · ★★★ rare · ★★★★ epic · ★★★★★ legendary. Append ` ✨` if `shiny` is true.
-- `hatchedAt` from companion.json.
+- `soul.hatchedAt` from the companion JSON.
 
 ---
 
@@ -133,7 +134,7 @@ Peak stat: {stat name with highest value}  ({value})
 Dump stat: {stat name with lowest value}  ({value})
 ```
 
-- `hatchedAt` from companion.json; convert unix ms to `YYYY-MM-DD` local date.
+- `soul.hatchedAt` from the companion JSON; convert unix ms to `YYYY-MM-DD` local date.
 - Level and daysAlive computed same way as the main card.
 - Generate the species description fresh each time; keep it under 2 sentences; maintain humorous, slightly self-aware tone.
 - Peak stat = key with highest value in `stats`; dump stat = key with lowest value.
@@ -162,7 +163,7 @@ Generate a single-line, in-character reaction from the companion based on recent
 Use `dailySeed` from the roll.js JSON output (a number derived from hash(userId + today's date)).
 
 1. Read `dailySeed` from the bones JSON.
-2. Read companion soul (name, personality, peak stat).
+2. Read `soul.name`, `soul.personality` from companion JSON.
 3. Generate a quip: a single sentence, ≤15 Chinese characters (or ≤15 words if in English), consistent with companion's personality. The quip should feel deterministic — i.e., Claude should treat `dailySeed` as a flavor seed and pick the quip style accordingly (e.g., `dailySeed % 5` maps to 5 distinct tone modes: cryptic / encouraging / sarcastic / philosophical / absurd).
 4. Compute today's fake stat bonus: `dailySeed % 10 + 1`.
 5. Peak stat name = key with highest value in `stats`.
