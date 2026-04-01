@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 ## Live Data
 
-Companion bones: !`mkdir -p ~/.config/mybuddy && ([ -f ~/.config/mybuddy/roll.js ] || find ~/.claude/plugins -name "roll.js" -path "*/mybuddy*" 2>/dev/null | head -1 | xargs -I{} cp {} ~/.config/mybuddy/roll.js 2>/dev/null); _BNAME=$(cat ~/.config/mybuddy/companion.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('name',''))" 2>/dev/null || echo ""); node ~/.config/mybuddy/roll.js "$USER" "$_BNAME" 2>/dev/null || echo "ERROR: run /mybuddy after reinstalling the plugin"`
+Companion bones: !`bash ~/.config/mybuddy/get-companion.sh`
 Companion soul:  !`cat ~/.config/mybuddy/companion.json 2>/dev/null || echo "null"`
 
 ---
