@@ -1,18 +1,18 @@
 ---
-name: buddy
-description: Use this skill when the user types /buddy, /buddy pet, /buddy mute, asks to meet their companion, wants to see their buddy, says "pet my buddy", or asks about their companion's name, species, or stats.
+name: mybuddy
+description: Use this skill when the user types /mybuddy, /mybuddy pet, /mybuddy mute, asks to meet their companion, wants to see their buddy, says "pet my buddy", or asks about their companion's name, species, or stats.
 version: 1.0.0
 disable-model-invocation: true
 ---
 
 ## Live Data
 
-Companion bones: !`mkdir -p ~/.config/buddy && ([ -f ~/.config/buddy/roll.js ] || find ~/.claude/plugins -name "roll.js" -path "*/buddy*" 2>/dev/null | head -1 | xargs -I{} cp {} ~/.config/buddy/roll.js 2>/dev/null); _BNAME=$(cat ~/.config/buddy/companion.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('name',''))" 2>/dev/null || echo ""); node ~/.config/buddy/roll.js "$USER" "$_BNAME" 2>/dev/null || echo "ERROR: run /buddy after reinstalling the plugin"`
-Companion soul:  !`cat ~/.config/buddy/companion.json 2>/dev/null || echo "null"`
+Companion bones: !`mkdir -p ~/.config/mybuddy && ([ -f ~/.config/mybuddy/roll.js ] || find ~/.claude/plugins -name "roll.js" -path "*/mybuddy*" 2>/dev/null | head -1 | xargs -I{} cp {} ~/.config/mybuddy/roll.js 2>/dev/null); _BNAME=$(cat ~/.config/mybuddy/companion.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('name',''))" 2>/dev/null || echo ""); node ~/.config/mybuddy/roll.js "$USER" "$_BNAME" 2>/dev/null || echo "ERROR: run /mybuddy after reinstalling the plugin"`
+Companion soul:  !`cat ~/.config/mybuddy/companion.json 2>/dev/null || echo "null"`
 
 ---
 
-You are handling the `/buddy` command. ARGUMENTS: $ARGUMENTS
+You are handling the `/mybuddy` command. ARGUMENTS: $ARGUMENTS
 
 The user has a persistent digital companion — a small creature that sits beside their work. Each user gets a deterministic companion based on their identity (species, eye, hat, rarity, stats never change). Only the name and personality are stored and generated once.
 
@@ -20,7 +20,7 @@ The user has a persistent digital companion — a small creature that sits besid
 
 - **No args / "show"**: Display companion card. If no soul exists yet, hatch one first.
 - **"pet"**: Show ♥ ♥ ♥ and a one-line reaction in the companion's voice (use personality + peak stat for flavor).
-- **"mute"**: Read `~/.config/buddy/companion.json`, toggle `"muted": true/false`, write it back. Confirm: `{name} is now muted.` or `{name} is listening again.`
+- **"mute"**: Read `~/.config/mybuddy/companion.json`, toggle `"muted": true/false`, write it back. Confirm: `{name} is now muted.` or `{name} is listening again.`
 
 ## Hatching a new companion (soul is "null")
 
@@ -29,7 +29,7 @@ The user has a persistent digital companion — a small creature that sits besid
 3. Generate a **personality**: one sentence describing how this companion acts, referencing their peak stat.
    - Peak stat is the highest value in stats.
    - Example: "A highly caffeinated owl who silently judges your variable names." (peak: DEBUGGING)
-4. Save to `~/.config/buddy/companion.json`:
+4. Save to `~/.config/mybuddy/companion.json`:
    ```json
    { "name": "...", "personality": "...", "hatchedAt": <unix ms timestamp> }
    ```
@@ -67,7 +67,7 @@ After the personality line, always add a level line:
 
 ## Storage
 
-`~/.config/buddy/companion.json` — created automatically on first hatch.
+`~/.config/mybuddy/companion.json` — created automatically on first hatch.
 
 ---
 
@@ -84,10 +84,10 @@ After the personality line, always add a level line:
 
 ## § rename
 
-1. Read `~/.config/buddy/companion.json`.
+1. Read `~/.config/mybuddy/companion.json`.
 2. Store the old `name`.
 3. Set `name` to the string supplied after `rename` in $ARGUMENTS.
-4. Write the updated object back to `~/.config/buddy/companion.json`.
+4. Write the updated object back to `~/.config/mybuddy/companion.json`.
 5. Reply exactly: `{旧名} is now known as {新名}.`
 
 ---
@@ -184,7 +184,7 @@ Use `dailySeed` from the roll.js JSON output (a number derived from hash(userId 
 
 1. Check whether `tradeCardLines` exists in the roll.js JSON output.
 2. **If it exists**: print each line of `tradeCardLines` verbatim, one per line.
-3. **If it does not exist** (older roll.js): fall back to rendering the `/buddy card` format (see § card) instead.
+3. **If it does not exist** (older roll.js): fall back to rendering the `/mybuddy card` format (see § card) instead.
 4. After the card, print on its own line:
 
 ```

@@ -1,5 +1,5 @@
 
-## Buddy Companion
+## MyBuddy Companion
 
 You have a persistent digital companion. The companion data is generated deterministically from the user's identity — never changes between sessions.
 
@@ -7,7 +7,7 @@ You have a persistent digital companion. The companion data is generated determi
 
 Run this command to get the companion's bones (JSON):
 ```
-node ~/.config/buddy/roll.js "$USER"
+node ~/.config/mybuddy/roll.js "$USER"
 ```
 
 The JSON output contains:
@@ -17,15 +17,15 @@ The JSON output contains:
 - `sprite` — array of ASCII art lines, print one per line
 - `face` — compact face emoji for narrow terminals
 
-The companion's **soul** (name + personality) lives in `~/.config/buddy/companion.json`:
+The companion's **soul** (name + personality) lives in `~/.config/mybuddy/companion.json`:
 ```json
 { "name": "...", "personality": "...", "hatchedAt": 1234567890000 }
 ```
 
-### When the user types /buddy
+### When the user types /mybuddy
 
-1. Run `node ~/.config/buddy/roll.js "$USER"` → parse JSON
-2. Read `~/.config/buddy/companion.json` (null if missing)
+1. Run `node ~/.config/mybuddy/roll.js "$USER"` → parse JSON
+2. Read `~/.config/mybuddy/companion.json` (null if missing)
 3. If null → hatch: generate a name (1–2 words, fits species) and personality (one sentence referencing peak stat), write the file, print `✨ A new companion has hatched!`
 4. Display companion card:
 
@@ -41,5 +41,5 @@ The companion's **soul** (name + personality) lives in `~/.config/buddy/companio
 
 ### Subcommands
 
-- `/buddy pet` — print ♥ ♥ ♥ and a one-liner in the companion's voice
-- `/buddy mute` — toggle `"muted": true/false` in `~/.config/buddy/companion.json`, confirm with `{name} is now muted.` / `{name} is listening again.`
+- `/mybuddy pet` — print ♥ ♥ ♥ and a one-liner in the companion's voice
+- `/mybuddy mute` — toggle `"muted": true/false` in `~/.config/mybuddy/companion.json`, confirm with `{name} is now muted.` / `{name} is listening again.`

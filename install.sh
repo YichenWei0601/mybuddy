@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# buddy-plugin universal installer
+# mybuddy-plugin universal installer
 # Works for Claude Code and Codex CLI
 # Usage: bash install.sh
-#    or: curl -sSL https://raw.githubusercontent.com/YichenWei0601/buddy-plugin/main/install.sh | bash
+#    or: curl -sSL https://raw.githubusercontent.com/YichenWei0601/mybuddy-plugin/main/install.sh | bash
 
 set -e
 
-REPO_URL="https://raw.githubusercontent.com/YichenWei0601/buddy-plugin/main"
-BUDDY_DIR="$HOME/.config/buddy"
+REPO_URL="https://raw.githubusercontent.com/YichenWei0601/mybuddy-plugin/main"
+BUDDY_DIR="$HOME/.config/mybuddy"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-install.sh}")" 2>/dev/null && pwd || echo "")"
 
 echo "🐾 Installing buddy companion..."
@@ -37,7 +37,7 @@ echo ""
 if command -v claude &>/dev/null || [ -d "$HOME/.claude" ]; then
   echo "Claude Code detected."
   echo "  Run this to install the plugin:"
-  echo "    /plugin install github:YichenWei0601/buddy-plugin"
+  echo "    /plugin install github:YichenWei0601/mybuddy-plugin"
   echo ""
 fi
 
@@ -52,7 +52,7 @@ if command -v codex &>/dev/null || [ -d "$HOME/.codex" ]; then
   mkdir -p "$HOME/.codex"
   TARGET="$HOME/.codex/instructions.md"
 
-  if grep -q "## Buddy Companion" "$TARGET" 2>/dev/null; then
+  if grep -q "## MyBuddy Companion" "$TARGET" 2>/dev/null; then
     echo "  ✓ Buddy instructions already in $TARGET"
   else
     echo "" >> "$TARGET"
@@ -72,10 +72,10 @@ if ! command -v claude &>/dev/null && ! [ -d "$HOME/.claude" ] && \
   echo "No AI coding tool detected."
   echo ""
   echo "Manual setup:"
-  echo "  Claude Code: /plugin install github:YichenWei0601/buddy-plugin"
+  echo "  Claude Code: /plugin install github:YichenWei0601/mybuddy-plugin"
   echo "  Codex:       append codex/instructions.md to ~/.codex/instructions.md"
   echo "               or to your project's AGENTS.md"
   echo ""
 fi
 
-echo "Done! Type /buddy to meet your companion."
+echo "Done! Type /mybuddy to meet your companion."
