@@ -24,6 +24,17 @@ else
 fi
 echo "  ✓ roll.js → $BUDDY_DIR/roll.js"
 
+# Copy tmux scripts
+for f in get-companion.sh watch.js tmux-start.sh; do
+  if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/scripts/$f" ]; then
+    cp "$SCRIPT_DIR/scripts/$f" "$BUDDY_DIR/$f"
+  else
+    curl -sSL "$REPO_URL/scripts/$f" -o "$BUDDY_DIR/$f"
+  fi
+  chmod +x "$BUDDY_DIR/$f" 2>/dev/null || true
+done
+echo "  ✓ tmux scripts → $BUDDY_DIR/"
+
 # 2. Verify Node.js
 if ! command -v node &>/dev/null; then
   echo ""
@@ -79,3 +90,6 @@ if ! command -v claude &>/dev/null && ! [ -d "$HOME/.claude" ] && \
 fi
 
 echo "Done! Type /mybuddy to meet your companion."
+echo ""
+echo "Tip: run 'bash ~/.config/mybuddy/tmux-start.sh' to show companion in a tmux pane."
+echo "     Works with Claude Code, Codex, or any terminal tool."
