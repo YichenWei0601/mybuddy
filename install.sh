@@ -25,7 +25,7 @@ fi
 echo "  ✓ roll.js → $BUDDY_DIR/roll.js"
 
 # Copy tmux scripts
-for f in get-companion.sh watch.js tmux-start.sh; do
+for f in get-companion.sh watch.js tmux-start.sh launch-companion.sh; do
   if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/scripts/$f" ]; then
     cp "$SCRIPT_DIR/scripts/$f" "$BUDDY_DIR/$f"
   else

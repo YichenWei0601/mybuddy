@@ -21,13 +21,13 @@ The user has a persistent digital companion — a small creature that sits besid
 
 ## Subcommand routing
 
-- **No args / "show"**: Display companion card. If no soul exists yet, hatch one first.
+- **No args / "show"**: Display companion card (hatch first if needed), then launch companion animation.
 - **"pet"**: Show ♥ ♥ ♥ and a one-line reaction in the companion's voice (use personality + peak stat for flavor).
 - **"mute"**: Read `~/.config/mybuddy/companion.json`, toggle `"muted": true/false`, write it back. Confirm: `{name} is now muted.` or `{name} is listening again.`
 
 ## Hatching a new companion (`soul` field is null)
 
-1. The bones are already determined (see Live Data above — species, rarity, eye, hat, stats).
+1. The bones are already determined (see Step 1 above — species, rarity, eye, hat, stats).
 2. Generate a **name**: 1–2 words, memorable, fits the species vibe.
 3. Generate a **personality**: one sentence describing how this companion acts, referencing their peak stat.
    - Peak stat is the highest value in stats.
@@ -37,6 +37,15 @@ The user has a persistent digital companion — a small creature that sits besid
    { "name": "...", "personality": "...", "hatchedAt": <unix ms timestamp> }
    ```
 5. Print `✨ A new companion has hatched!` then show the companion card.
+6. Launch the companion animation (see § launch).
+
+## § launch
+
+After showing the companion card (both on first hatch and on `/mybuddy` with no args), run:
+```
+bash ~/.config/mybuddy/launch-companion.sh
+```
+Print whatever the script outputs (e.g. "companion started in tmux pane"). Do not run this for pet/mute/rename/info/daily/trade subcommands.
 
 ## Companion card format
 
